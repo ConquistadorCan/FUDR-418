@@ -2,8 +2,8 @@ import libnum
 import random
 from math import gcd
 
-KEY_BIT_LENGTH = 4
-PLAIN_TEXT = None
+KEY_BIT_LENGTHS = [4, 8, 16, 32]
+PLAIN_TEXTS = ["apple", "banana", "I like apple", "+=-*", "julius caeser"]
 
 def generate_prime(bit_length: int) -> int:
     return libnum.generate_prime(bit_length)
@@ -43,6 +43,14 @@ def encrypt(public_key: tuple, plain_text: int) -> int:
     cipher_text = pow(plain_text, e, n)
     return cipher_text
 
+def encrypt_message(public_key: tuple, plain_text: str) -> list:
+    e, n = public_key
+    cipher_text = []
+    for char in plain_text:
+        encrypted_char = pow(ord(char), e, n)
+        cipher_text.append(encrypted_char)
+    return cipher_text
+
 def decrypt(private_key: tuple, cipher_text: int) -> int:
     d, n = private_key
 
@@ -52,24 +60,30 @@ def decrypt(private_key: tuple, cipher_text: int) -> int:
     plain_text = pow(cipher_text, d, n)
     return plain_text
 
+def decrypt_message(private_key: tuple, cipher_text: list) -> str:
+    d, n = private_key
+    plain_text = ''.join(chr(pow(char, d, n)) for char in cipher_text)
+    return plain_text
+
 # Test
 def test_scenario():
     num_of_tests = 1000
     for _ in range(num_of_tests):
-        public_key, private_key = generate_key_pair(KEY_BIT_LENGTH)
+        key_bit_length = random.choice(KEY_BIT_LENGTHS)
+        public_key, private_key = generate_key_pair(key_bit_length)
 
-        plain_text = PLAIN_TEXT
+        plain_text = random.choice(PLAIN_TEXTS)
         if plain_text is None:            
             plain_text = create_plaintext(public_key[1])
 
-        cipher_text = encrypt(public_key, plain_text)
+        cipher_text = encrypt_message(public_key, plain_text)
 
-        decrypted_text = decrypt(private_key, cipher_text)
+        decrypted_text = decrypt_message(private_key, cipher_text)
         if plain_text == decrypted_text:
-            print(f"Public key: {public_key}\nPrivate key: {private_key}\nPlain text: {plain_text}\nCipher text: {cipher_text}\nDecrypted text: {decrypted_text}\n**********")
+            print(f"Key Bit Length: {key_bit_length} \nPublic key: {public_key}\nPrivate key: {private_key}\nPlain text: {plain_text}\nCipher text: {cipher_text}\nDecrypted text: {decrypted_text}\n**********")
             continue
         else:
-            print(f"Public key: {public_key}\nPrivate key: {private_key}\nPlain text: {plain_text}\nCipher text: {cipher_text}\nDecrypted text: {decrypted_text}\n**********")
+            print(f"Key Bit Length: {key_bit_length} \n Public key: {public_key}\nPrivate key: {private_key}\nPlain text: {plain_text}\nCipher text: {cipher_text}\nDecrypted text: {decrypted_text}\n**********")
             print("Decryption failed")
             break
     
