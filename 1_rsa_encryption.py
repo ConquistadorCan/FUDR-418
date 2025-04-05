@@ -34,15 +34,6 @@ def create_plaintext(n: int) -> int:
 
     return random.randint(1, n - 1)
 
-def encrypt(public_key: tuple, plain_text: int) -> int:
-    e, n = public_key
-    
-    if plain_text < 0 or plain_text >= n:
-        raise ValueError("plain_text must be greater than 0 and less than n")
-    
-    cipher_text = pow(plain_text, e, n)
-    return cipher_text
-
 def encrypt_message(public_key: tuple, plain_text: str) -> list:
     e, n = public_key
     cipher_text = []
@@ -50,15 +41,6 @@ def encrypt_message(public_key: tuple, plain_text: str) -> list:
         encrypted_char = pow(ord(char), e, n)
         cipher_text.append(encrypted_char)
     return cipher_text
-
-def decrypt(private_key: tuple, cipher_text: int) -> int:
-    d, n = private_key
-
-    if cipher_text < 0 or cipher_text >= n:
-        raise ValueError("cipher_text must be greater than 0 and less than n")
-    
-    plain_text = pow(cipher_text, d, n)
-    return plain_text
 
 def decrypt_message(private_key: tuple, cipher_text: list) -> str:
     d, n = private_key
