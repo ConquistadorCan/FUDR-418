@@ -1,6 +1,7 @@
-import libnum
 import random
 from math import gcd
+
+import libnum
 
 PRIME_BIT_LENGTHS = [4, 8, 16, 32]
 PLAIN_TEXTS = ["apple", "banana", "I like apple", "+=-*", "julius caeser"]
